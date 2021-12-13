@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 
 namespace Collections
 {
@@ -16,6 +18,12 @@ namespace Collections
 
         public bool AddFollowedUser(string group, TUser user)
         {
+            if (!this.map.Keys.Contains(group))
+            {
+                var friend = new List<TUser>();
+                friend.Add(user);
+                this.map.Add(group, friend);
+            }
             foreach (var listedUser in this.map[group])
             {
                 if (user.Username == listedUser.Username)
@@ -31,7 +39,7 @@ namespace Collections
         {
             get
             {
-                IList<TUser> friends = new List<TUser>();
+                var friends = new List<TUser>();
                 foreach (var entry in this.map.Keys)
                 {
                     foreach (var listedUser in this.map[entry])
@@ -49,7 +57,14 @@ namespace Collections
 
         public ICollection<TUser> GetFollowedUsersInGroup(string group)
         {
-            throw new NotImplementedException("TODO construct and return a collection containing of all users followed by the current users, in group");
+            var friends = new List<TUser>();
+            foreach (var friend in this.map[group])
+            {
+                friends.Add(friend);
+            }
+
+            return friends;
+
         }
     }
 }
